@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.scoreboardbalancemaster.R;
+//import com.example.scoreboardbalancemaster.R;
 
 public class ScoreboardActivity extends AppCompatActivity {
 
@@ -47,16 +47,20 @@ public class ScoreboardActivity extends AppCompatActivity {
         lastScoreText.setText("Letzter Score: " + lastScore);
 
         // Button für "Nochmal spielen"
-        retryButton.setOnClickListener(view -> {
+       /* retryButton.setOnClickListener(view -> {
             Intent intent = new Intent(ScoreboardActivity.this, ScoreboardActivity.class);
             startActivity(intent);
             finish();
         });
 
+        */
+
         // Button für Einstellungen
-        settingsButton.setOnClickListener(view -> {
+       /* settingsButton.setOnClickListener(view -> {
             Intent intent = new Intent(ScoreboardActivity.this, SettingsActivity.class);
             startActivity(intent);
         });
+
+        */
     }
 }

@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
             // Proceed only if username is valid
             if (!username.isEmpty()) {
                 // Navigate to DashboardActivity
-                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                Intent intent = new Intent(LoginActivity.this, GameActivity.class);
                 intent.putExtra("USERNAME_KEY", username);
                 startActivity(intent);
             }

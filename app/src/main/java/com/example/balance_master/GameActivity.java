@@ -1,73 +1,128 @@
 package com.example.balance_master;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.widget.ProgressBar;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-private int playerScore;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements SensorEventListener, BalanceBoardView.GameListener {
 
-    private TextView highScoreText, lastScoreText;
-    private ProgressBar highScoreBar, lastScoreBar;
-    private int lastScore = 0;
-    private int highScore = 0;
-    private final int MAX_SCORE = 100;
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private final Handler handler = new Handler();
+
+    private Button startButton;
+    private TextView timerTextView;
+    private TextView resultTextView;
+    private BalanceBoardView balanceBoardView;
+
+    private boolean isGameRunning = false;
+    private final long gameDuration = 10000L; // 10 seconds
+    private final long countdownTime = 5000L; // 5-second countdown
+
+    private double tiltAngle = 0.0;
+    private CountDownTimer gameTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scoreboard);
+        setContentView(R.layout.activity_game); // Updated XML reference
 
-        highScoreText = findViewById(R.id.highScoreText);
-        lastScoreText = findViewById(R.id.lastScoreText);
-        highScoreBar = findViewById(R.id.highScoreBar);
-        lastScoreBar = findViewById(R.id.lastScoreBar);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-        // Load saved scores
-        SharedPreferences prefs = getSharedPreferences("GamePrefs", MODE_PRIVATE);
-        lastScore = prefs.getInt("lastScore", 0);
-        highScore = prefs.getInt("highScore", 0);
+        startButton = findViewById(R.id.startButton);
+        timerTextView = findViewById(R.id.timerTextView);
+        resultTextView = findViewById(R.id.resultTextView);
+        balanceBoardView = findViewById(R.id.balanceBoardView);
+        balanceBoardView.setGameListener(this);
 
-        // Update UI
-        updateScores();
-
-        import android.content.Intent;
-
-        Intent intent = new Intent(GameActivity.this, MainActivity.class);
-        intent.putExtra("LAST_SCORE", playerScore);
-        startActivity(intent);
-        finish();
+        startButton.setOnClickListener(v -> startGame());
     }
 
-    private void updateScores() {
-        highScoreText.setText("High Score: " + highScore);
-        lastScoreText.setText("Last Score: " + lastScore);
+    private void startGame() {
+        resetUI();
+        balanceBoardView.startGame();
+        startButton.setEnabled(false);
 
-        // Convert scores to percentage of max
-        int highScoreProgress = (int) ((highScore / (float) MAX_SCORE) * 100);
-        int lastScoreProgress = (int) ((lastScore / (float) MAX_SCORE) * 100);
+        new CountDownTimer(countdownTime, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timerTextView.setText("Starting in: " + millisUntilFinished / 1000);
+            }
 
-        highScoreBar.setProgress(highScoreProgress);
-        lastScoreBar.setProgress(lastScoreProgress);
+            @Override
+            public void onFinish() {
+                startMeasurement();
+            }
+        }.start();
     }
 
-    // Call this method after a game ends
-    public void saveNewScore(int newScore) {
-        lastScore = newScore;
-        if (newScore > highScore) {
-            highScore = newScore;
+    private void startMeasurement() {
+        isGameRunning = true;
+        timerTextView.setText("Game Running");
+
+        gameTimer = new CountDownTimer(gameDuration, 100) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                balanceBoardView.updateAngle(tiltAngle);
+            }
+
+            @Override
+            public void onFinish() {
+                if (!balanceBoardView.isGameOver()) {
+                    onGameEnd(100);
+                }
+            }
+        };
+        gameTimer.start();
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER && isGameRunning) {
+            float x = event.values[0]; // Left/Right tilt
+            float y = event.values[1]; // Forward/Backward tilt
+
+            tiltAngle = Math.toDegrees(Math.atan2(y, x));
+
+            balanceBoardView.updateAngle(tiltAngle);
         }
+    }
 
-        // Save scores
-        SharedPreferences.Editor editor = getSharedPreferences("GamePrefs", MODE_PRIVATE).edit();
-        editor.putInt("lastScore", lastScore);
-        editor.putInt("highScore", highScore);
-        editor.apply();
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
-        // Update UI
-        updateScores();
+    public void resetUI() {
+        resultTextView.setText("");
+        timerTextView.setText("Get Ready...");
+        startButton.setEnabled(false);
+    }
+
+    public void onGameEnd(float finalScore) {
+        isGameRunning = false;
+        if (gameTimer != null) gameTimer.cancel();
+        resultTextView.setText("Final Score: " + Math.round(finalScore));
+        startButton.setEnabled(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(this);
     }
 }

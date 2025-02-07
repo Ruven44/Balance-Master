@@ -52,4 +52,4 @@
         android:layout_height="wrap_content"
         android:text="Einstellungen"
         android:layout_marginTop="8dp"/>
-</LinearLayout>et.ConstraintLayout>
+</LinearLayout>
