@@ -44,7 +44,7 @@ public class ScoreboardActivity extends AppCompatActivity {
 
         // Texte aktualisieren
         highscoreText.setText("Highscore: " + highscore);
-        lastScoreText.setText("Letzter Score: " + lastScore);
+        lastScoreText.setText("Last Score: " + lastScore);
 
         // Button für "Nochmal spielen"
        /* retryButton.setOnClickListener(view -> {
