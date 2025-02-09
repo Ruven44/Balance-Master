@@ -71,7 +71,7 @@ public class BalanceBoardView extends AppCompatImageView {
         if (!gameRunning || gameOver) return;
 
         // Smooth transition instead of abrupt changes
-        currentAngle = (0.98 * currentAngle) + (0.005 * angle);
+        currentAngle = (0.98 * currentAngle) + (0.006 * angle);
 
         float centerX = getWidth() / 2f;
         float centerY = getHeight() / 2f;

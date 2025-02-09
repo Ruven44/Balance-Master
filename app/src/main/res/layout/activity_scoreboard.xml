@@ -26,7 +26,7 @@
         android:id="@+id/last_score_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Letzter Score: 0"
+        android:text="Last Score: 0"
         android:textSize="20sp"
         android:layout_marginTop="8dp"/>
 
@@ -44,12 +44,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Nochmal spielen" />
+        android:text="Play again" />
 
     <Button
         android:id="@+id/settings_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Einstellungen"
+        android:text="Settings"
         android:layout_marginTop="8dp"/>
 </LinearLayout>
