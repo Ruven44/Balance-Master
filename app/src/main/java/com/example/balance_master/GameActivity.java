@@ -10,6 +10,8 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.widget.Button;
 import android.widget.TextView;
+import android.content.Intent;
+
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -36,8 +38,34 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game); // Updated XML reference
 
+
+
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        // Navigation Buttons
+        Button btnGame = findViewById(R.id.btnGame);
+        Button btnScoreboard = findViewById(R.id.btnScoreboard);
+        Button btnLogout = findViewById(R.id.btnLogout);
+
+        // Stay on GameActivity when clicking "Game"
+        btnGame.setOnClickListener(v -> {
+            // Do nothing since we are already here
+        });
+
+        // Navigate to ScoreboardActivity
+        btnScoreboard.setOnClickListener(v -> {
+            Intent intent = new Intent(GameActivity.this, ScoreboardActivity.class);
+            startActivity(intent);
+        });
+
+        // Logout and go back to LoginActivity
+        btnLogout.setOnClickListener(v -> {
+            Intent intent = new Intent(GameActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clears back stack
+            startActivity(intent);
+            finish();
+        });
 
         startButton = findViewById(R.id.startButton);
         timerTextView = findViewById(R.id.timerTextView);
@@ -46,6 +74,8 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         balanceBoardView.setGameListener(this);
 
         startButton.setOnClickListener(v -> startGame());
+
+
     }
 
     private void startGame() {

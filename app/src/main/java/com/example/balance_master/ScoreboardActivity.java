@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 //import com.example.scoreboardbalancemaster.R;
@@ -27,6 +28,31 @@ public class ScoreboardActivity extends AppCompatActivity {
         settingsButton = findViewById(R.id.settings_button);
 
         sharedPreferences = getSharedPreferences("GamePrefs", MODE_PRIVATE);
+
+        // Navigation Buttons
+        Button btnGame = findViewById(R.id.btnGame);
+        Button btnScoreboard = findViewById(R.id.btnScoreboard);
+        Button btnLogout = findViewById(R.id.btnLogout);
+
+        // Navigate to GameActivity
+        btnGame.setOnClickListener(v -> {
+            Intent intent = new Intent(ScoreboardActivity.this, GameActivity.class);
+            startActivity(intent);
+        });
+
+        // Stay on ScoreboardActivity when clicking "Scoreboard"
+        btnScoreboard.setOnClickListener(v -> {
+            // Do nothing since we are already here
+        });
+
+        // Logout and go back to LoginActivity
+        btnLogout.setOnClickListener(v -> {
+            Intent intent = new Intent(ScoreboardActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clears back stack
+            startActivity(intent);
+            finish();
+        });
+
 
         // Score aus Intent abrufen
         int lastScore = getIntent().getIntExtra("LAST_SCORE", 0);

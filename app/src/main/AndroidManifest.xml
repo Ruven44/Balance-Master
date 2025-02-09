@@ -29,6 +29,12 @@
             android:exported="true"
             android:theme="@style/Theme.Balance_Master"/>
 
+        <!-- Scoreboard Activity -->
+        <activity
+            android:name=".ScoreboardActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Balance_Master"/>
+
         <!-- Main Activity (Optional, if needed for navigation) -->
         <activity
             android:name=".MainActivity"
