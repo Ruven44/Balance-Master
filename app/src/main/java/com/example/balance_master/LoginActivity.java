@@ -45,10 +45,11 @@ public class LoginActivity extends AppCompatActivity {
 
             // Proceed only if username is valid
             if (!username.isEmpty()) {
-                // Navigate to DashboardActivity
-                Intent intent = new Intent(LoginActivity.this, GameActivity.class);
+                // Navigate to GameActivity
+                Intent intent = new Intent(LoginActivity.this, com.example.balance_master.GameActivity.class);
                 intent.putExtra("USERNAME_KEY", username);
                 startActivity(intent);
+                finish(); // Close LoginActivity so user can't go back to it
             }
         });
     }

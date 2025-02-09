@@ -12,7 +12,7 @@
         android:textSize="24sp"
         android:layout_marginBottom="20dp" />
 
-    <com.example.test_balance.BalanceBoardView
+    <com.example.balance_master.BalanceBoardView
         android:id="@+id/balanceBoardView"
         android:layout_width="match_parent"
         android:layout_height="200dp" />
