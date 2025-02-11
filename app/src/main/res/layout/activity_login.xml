@@ -98,6 +98,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_welcome" />
 
+    <Switch
+        android:id="@+id/switchDailyNotification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enable Daily Notifications"
+        android:checked="false"
+        app:layout_constraintTop_toBottomOf="@+id/btnTestNotification"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
+
     <TextView
         android:id="@+id/textView_difficulty_easy"
         android:layout_width="wrap_content"

@@ -21,10 +21,10 @@ public class MainActivity extends AppCompatActivity {
         // Request notification permissions (Android 13+)
         requestNotificationPermission();
 
-        // Start the notification scheduler
-        Log.d(TAG, "Starting NotificationScheduler...");
+        // Manually trigger notification scheduling and log result
+        Log.d(TAG, "Triggering NotificationScheduler...");
         NotificationScheduler.scheduleDailyNotification(this);
-        Log.d(TAG, "NotificationScheduler initialized!");
+        Log.d(TAG, "NotificationScheduler should now be active!");
 
         // Test Button for Manual Notification
         Button testButton = findViewById(R.id.btnTestNotification);

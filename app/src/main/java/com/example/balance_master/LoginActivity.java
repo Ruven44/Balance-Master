@@ -2,6 +2,7 @@ package com.example.balance_master;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -20,10 +22,38 @@ public class LoginActivity extends AppCompatActivity {
     private static final int REQUEST_NOTIFICATION_PERMISSION = 1;
     private static final String TAG = "LoginActivity";
 
+    private Switch switchDailyNotification;
+    private SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // Initialize SharedPreferences
+        sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+
+        // Get Switch UI Element
+        switchDailyNotification = findViewById(R.id.switchDailyNotification);
+
+        // Load saved switch state
+        boolean isNotificationEnabled = sharedPreferences.getBoolean("DailyNotificationEnabled", false);
+        switchDailyNotification.setChecked(isNotificationEnabled);
+
+        // Handle Switch Toggle
+        switchDailyNotification.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("DailyNotificationEnabled", isChecked);
+            editor.apply();
+
+            if (isChecked) {
+                Log.d(TAG, "Daily notifications enabled!");
+                NotificationScheduler.scheduleDailyNotification(this);
+            } else {
+                Log.d(TAG, "Daily notifications disabled!");
+                NotificationScheduler.cancelDailyNotification(this);
+            }
+        });
 
         // Request Notification Permission (Android 13+)
         requestNotificationPermission();
@@ -74,16 +104,11 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // Requests notification permission for Android 13+
     private void requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "Requesting notification permissions...");
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS},
-                        REQUEST_NOTIFICATION_PERMISSION);
-            } else {
-                Log.d(TAG, "Notification permissions already granted.");
+                    != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
             }
         }
     }
