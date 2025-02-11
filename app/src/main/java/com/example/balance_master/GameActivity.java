@@ -1,6 +1,7 @@
 package com.example.balance_master;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -170,12 +171,20 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             playWinSound();
         }
 
-        // Send score to ScoreboardActivity
-        Intent intent = new Intent(GameActivity.this, ScoreboardActivity.class);
-        intent.putExtra("LAST_SCORE", Math.round(finalScore));
-        startActivity(intent);
-        finish(); // Close GameActivity
+        // Save last score in SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("GamePrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("LAST_SCORE", Math.round(finalScore));
+
+        // Update highscore if the new score is higher
+        int highscore = sharedPreferences.getInt("HIGHSCORE", 0);
+        if (finalScore > highscore) {
+            editor.putInt("HIGHSCORE", Math.round(finalScore));
+        }
+
+        editor.apply(); // Save the changes
     }
+
 
 
     // Method to play a cheerful win sound

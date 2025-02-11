@@ -69,4 +69,21 @@ public class ScoreboardActivity extends AppCompatActivity {
         lastScoreText.setText("Last Score: " + lastScore);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateScoreboard();
+    }
+
+    private void updateScoreboard() {
+        SharedPreferences sharedPreferences = getSharedPreferences("GamePrefs", MODE_PRIVATE);
+
+        int lastScore = sharedPreferences.getInt("LAST_SCORE", 0);
+        int highscore = sharedPreferences.getInt("HIGHSCORE", 0);
+
+        highscoreText.setText("Highscore: " + highscore);
+        lastScoreText.setText("Last Score: " + lastScore);
+    }
+
+
 }
