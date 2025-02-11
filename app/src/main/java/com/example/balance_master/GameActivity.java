@@ -13,6 +13,10 @@ import android.widget.TextView;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.os.VibratorManager;
+import android.content.Context;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -148,6 +152,32 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         if (gameTimer != null) gameTimer.cancel();
         resultTextView.setText("Final Score: " + Math.round(finalScore));
         startButton.setEnabled(true);
+        if (finalScore < 100) { // Play error sound and vibrate only if the player fails
+            playErrorSound();
+            vibrateOnFail();
+        }
+    }
+
+    private void playErrorSound() {
+        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+        toneGen.startTone(ToneGenerator.TONE_SUP_ERROR, 300); // Error beep for 300ms
+    }
+
+    // Method to make the device vibrate on fail
+    private void vibrateOnFail() {
+        Vibrator vibrator;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            VibratorManager vibratorManager = (VibratorManager) getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+            vibrator = vibratorManager.getDefaultVibrator();
+        } else {
+            vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        }
+
+        if (vibrator != null && vibrator.hasVibrator()) {
+            VibrationEffect effect = VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE); // 200ms vibration
+            vibrator.vibrate(effect);
+        }
     }
 
     @Override
