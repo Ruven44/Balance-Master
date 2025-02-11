@@ -164,12 +164,19 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         startButton.setEnabled(true);
 
         if (finalScore < 100) {
-            playErrorSound(); // Play error sound when failing
-            vibrateOnFail(); // Vibrate on fail
+            playErrorSound();
+            vibrateOnFail();
         } else {
-            playWinSound(); // Play cheerful sound when winning
+            playWinSound();
         }
+
+        // Send score to ScoreboardActivity
+        Intent intent = new Intent(GameActivity.this, ScoreboardActivity.class);
+        intent.putExtra("LAST_SCORE", Math.round(finalScore));
+        startActivity(intent);
+        finish(); // Close GameActivity
     }
+
 
     // Method to play a cheerful win sound
     private void playWinSound() {

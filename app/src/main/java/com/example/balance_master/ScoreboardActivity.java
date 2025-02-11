@@ -24,8 +24,7 @@ public class ScoreboardActivity extends AppCompatActivity {
 
         highscoreText = findViewById(R.id.highscore_text);
         lastScoreText = findViewById(R.id.last_score_text);
-        retryButton = findViewById(R.id.retry_button);
-        settingsButton = findViewById(R.id.settings_button);
+
 
         sharedPreferences = getSharedPreferences("GamePrefs", MODE_PRIVATE);
 
@@ -34,33 +33,30 @@ public class ScoreboardActivity extends AppCompatActivity {
         Button btnScoreboard = findViewById(R.id.btnScoreboard);
         Button btnLogout = findViewById(R.id.btnLogout);
 
-        // Navigate to GameActivity
         btnGame.setOnClickListener(v -> {
             Intent intent = new Intent(ScoreboardActivity.this, GameActivity.class);
-            startActivity(intent);
-        });
-
-        // Stay on ScoreboardActivity when clicking "Scoreboard"
-        btnScoreboard.setOnClickListener(v -> {
-            // Do nothing since we are already here
-        });
-
-        // Logout and go back to LoginActivity
-        btnLogout.setOnClickListener(v -> {
-            Intent intent = new Intent(ScoreboardActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clears back stack
             startActivity(intent);
             finish();
         });
 
+        btnScoreboard.setOnClickListener(v -> {
+            // Stay on this screen
+        });
 
-        // Score aus Intent abrufen
+        btnLogout.setOnClickListener(v -> {
+            Intent intent = new Intent(ScoreboardActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
+
+        // Retrieve the last score from Intent
         int lastScore = getIntent().getIntExtra("LAST_SCORE", 0);
-        TextView lastScoreTextView = findViewById(R.id.last_score_text);  // Falls du eine TextView für den Score hast
-        lastScoreTextView.setText("Last Score: " + lastScore);
+
+        // Retrieve the high score from SharedPreferences
         int highscore = sharedPreferences.getInt("HIGHSCORE", 0);
 
-        // Highscore aktualisieren, falls neuer Score höher ist
+        // Update highscore if the new score is higher
         if (lastScore > highscore) {
             highscore = lastScore;
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -68,25 +64,9 @@ public class ScoreboardActivity extends AppCompatActivity {
             editor.apply();
         }
 
-        // Texte aktualisieren
+        // Update the TextViews with the correct scores
         highscoreText.setText("Highscore: " + highscore);
         lastScoreText.setText("Last Score: " + lastScore);
-
-        // Button für "Nochmal spielen"
-       /* retryButton.setOnClickListener(view -> {
-            Intent intent = new Intent(ScoreboardActivity.this, ScoreboardActivity.class);
-            startActivity(intent);
-            finish();
-        });
-
-        */
-
-        // Button für Einstellungen
-       /* settingsButton.setOnClickListener(view -> {
-            Intent intent = new Intent(ScoreboardActivity.this, SettingsActivity.class);
-            startActivity(intent);
-        });
-
-        */
     }
+
 }
