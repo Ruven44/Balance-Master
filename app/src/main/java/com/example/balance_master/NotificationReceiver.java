@@ -19,36 +19,35 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     public void sendNotification(Context context) {
         String channelId = "daily_notification_channel";
-        String channelName = "Daily Notifications";
+        String channelName = "Daily Training Reminder";
 
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // Erstelle die Notification-Channel für Android 8.0+
+        // Create Notification Channel for Android 8.0+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(channel);
         }
 
-        // Intent für das Öffnen der App beim Klicken auf die Benachrichtigung
-        Intent intent = new Intent(context, MainActivity.class);
+        // Intent to open the app when clicking the notification
+        Intent intent = new Intent(context, LoginActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        // Sound der Benachrichtigung
+        // Set Notification Sound
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-        // Erstelle die Benachrichtigung
+        // Build and Display Notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.drawable.ic_launcher_foreground) // Anpassen nach deinem Icon
-                .setContentTitle("Tägliche Erinnerung")
-                .setContentText("Zeit für dein tägliches Training!")
+                .setSmallIcon(R.drawable.ic_launcher_foreground) // Change to your app icon
+                .setContentTitle("Test Notification")
+                .setContentText("This is a test notification for Balance Master.")
                 .setAutoCancel(true)
                 .setSound(alarmSound)
                 .setContentIntent(pendingIntent);
 
-        // Zeige die Benachrichtigung an
-        notificationManager.notify(100, builder.build());
+        notificationManager.notify(101, builder.build());
     }
 }
