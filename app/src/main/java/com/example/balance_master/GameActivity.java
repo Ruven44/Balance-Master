@@ -11,6 +11,12 @@ import android.os.Handler;
 import android.widget.Button;
 import android.widget.TextView;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.os.VibratorManager;
+import android.content.Context;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -100,6 +106,9 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         isGameRunning = true;
         timerTextView.setText("Game Running");
 
+        // Play a beep sound when the game starts
+        playStartBeep();
+
         gameTimer = new CountDownTimer(gameDuration, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -115,6 +124,15 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         };
         gameTimer.start();
     }
+
+    // Method to play the start beep sound
+    private void playStartBeep() {
+        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+        toneGen.startTone(ToneGenerator.TONE_PROP_BEEP, 200); // Beep for 200ms
+        sleep(220); // Slight pause for reliability
+        toneGen.release(); // Free resources
+    }
+
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -137,11 +155,70 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         startButton.setEnabled(false);
     }
 
+    @Override
     public void onGameEnd(float finalScore) {
         isGameRunning = false;
         if (gameTimer != null) gameTimer.cancel();
+
         resultTextView.setText("Final Score: " + Math.round(finalScore));
         startButton.setEnabled(true);
+
+        if (finalScore < 100) {
+            playErrorSound();
+            vibrateOnFail();
+        } else {
+            playWinSound();
+        }
+
+        // Send score to ScoreboardActivity
+        Intent intent = new Intent(GameActivity.this, ScoreboardActivity.class);
+        intent.putExtra("LAST_SCORE", Math.round(finalScore));
+        startActivity(intent);
+        finish(); // Close GameActivity
+    }
+
+
+    // Method to play a cheerful win sound
+    private void playWinSound() {
+        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+
+        // Play a sequence of tones for a happy sound
+        toneGen.startTone(ToneGenerator.TONE_CDMA_ABBR_ALERT, 200);
+        sleep(250);
+        toneGen.startTone(ToneGenerator.TONE_CDMA_ONE_MIN_BEEP, 200);
+        sleep(250);
+        toneGen.startTone(ToneGenerator.TONE_CDMA_ABBR_INTERCEPT, 300);
+    }
+
+    // Utility method to create short pauses between tones
+    private void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void playErrorSound() {
+        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+        toneGen.startTone(ToneGenerator.TONE_SUP_ERROR, 300); // Error beep for 300ms
+    }
+
+    // Method to make the device vibrate on fail
+    private void vibrateOnFail() {
+        Vibrator vibrator;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            VibratorManager vibratorManager = (VibratorManager) getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+            vibrator = vibratorManager.getDefaultVibrator();
+        } else {
+            vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        }
+
+        if (vibrator != null && vibrator.hasVibrator()) {
+            VibrationEffect effect = VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE); // 200ms vibration
+            vibrator.vibrate(effect);
+        }
     }
 
     @Override
