@@ -107,8 +107,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         timerTextView.setText("Game Running");
 
         // Play a beep sound when the game starts
-        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100);
-        toneGen.startTone(ToneGenerator.TONE_PROP_BEEP, 300); // Beep for 150 milliseconds
+        playStartBeep();
 
         gameTimer = new CountDownTimer(gameDuration, 100) {
             @Override
@@ -125,6 +124,15 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         };
         gameTimer.start();
     }
+
+    // Method to play the start beep sound
+    private void playStartBeep() {
+        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+        toneGen.startTone(ToneGenerator.TONE_PROP_BEEP, 200); // Beep for 200ms
+        sleep(220); // Slight pause for reliability
+        toneGen.release(); // Free resources
+    }
+
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -147,14 +155,40 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         startButton.setEnabled(false);
     }
 
+    @Override
     public void onGameEnd(float finalScore) {
         isGameRunning = false;
         if (gameTimer != null) gameTimer.cancel();
+
         resultTextView.setText("Final Score: " + Math.round(finalScore));
         startButton.setEnabled(true);
-        if (finalScore < 100) { // Play error sound and vibrate only if the player fails
-            playErrorSound();
-            vibrateOnFail();
+
+        if (finalScore < 100) {
+            playErrorSound(); // Play error sound when failing
+            vibrateOnFail(); // Vibrate on fail
+        } else {
+            playWinSound(); // Play cheerful sound when winning
+        }
+    }
+
+    // Method to play a cheerful win sound
+    private void playWinSound() {
+        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+
+        // Play a sequence of tones for a happy sound
+        toneGen.startTone(ToneGenerator.TONE_CDMA_ABBR_ALERT, 200);
+        sleep(250);
+        toneGen.startTone(ToneGenerator.TONE_CDMA_ONE_MIN_BEEP, 200);
+        sleep(250);
+        toneGen.startTone(ToneGenerator.TONE_CDMA_ABBR_INTERCEPT, 300);
+    }
+
+    // Utility method to create short pauses between tones
+    private void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
