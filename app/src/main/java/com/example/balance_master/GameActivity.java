@@ -11,6 +11,8 @@ import android.os.Handler;
 import android.widget.Button;
 import android.widget.TextView;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -99,6 +101,10 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     private void startMeasurement() {
         isGameRunning = true;
         timerTextView.setText("Game Running");
+
+        // Play a beep sound when the game starts
+        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100);
+        toneGen.startTone(ToneGenerator.TONE_PROP_BEEP, 300); // Beep for 150 milliseconds
 
         gameTimer = new CountDownTimer(gameDuration, 100) {
             @Override
