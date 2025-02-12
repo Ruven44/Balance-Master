@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,9 +67,11 @@ public class LoginActivity extends AppCompatActivity {
         EditText editTextUsername = findViewById(R.id.editText_username);
         Button btnContinue = findViewById(R.id.button_continue);
         Button btnTestNotification = findViewById(R.id.btnTestNotification); // Test button
+        TextView textViewReminder = findViewById(R.id.textView_ReminderUsername); // Reminder TextView
 
-        // Initially disable the button
+        // Initially disable the button and hide reminder
         btnContinue.setEnabled(false);
+        textViewReminder.setText("");
 
         // Add text change listener to EditText
         editTextUsername.addTextChangedListener(new TextWatcher() {
@@ -79,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // Enable button only if text is not empty
                 btnContinue.setEnabled(!s.toString().trim().isEmpty());
+                textViewReminder.setText(""); // Clear reminder when typing
             }
 
             @Override
@@ -97,6 +101,9 @@ public class LoginActivity extends AppCompatActivity {
                 intent.putExtra("USERNAME_KEY", username);
                 startActivity(intent);
                 finish(); // Close LoginActivity so user can't go back to it
+            } else {
+                // Show reminder if username is empty
+                textViewReminder.setText("Please enter a username!");
             }
         });
 
