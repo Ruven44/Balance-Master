@@ -11,9 +11,11 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final int REQUEST_NOTIFICATION_PERMISSION = 1;
     private static final String TAG = "LoginActivity";
-
+    private TextView textViewReminder;
     private Switch switchDailyNotification;
     private SharedPreferences sharedPreferences;
 
@@ -59,16 +61,27 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // Request Notification Permission (Android 13+)
-        requestNotificationPermission();
-
         // Reference UI elements
+        textViewReminder = findViewById(R.id.textView_ReminderUsername);
         EditText editTextUsername = findViewById(R.id.editText_username);
         Button btnContinue = findViewById(R.id.button_continue);
         Button btnTestNotification = findViewById(R.id.btnTestNotification); // Test button
 
-        // Initially disable the button
-        btnContinue.setEnabled(false);
+        // Debugging: Ensure textViewReminder is found
+        if (textViewReminder == null) {
+            Log.e(TAG, "textViewReminder is NULL! Check XML ID.");
+        } else {
+            Log.d(TAG, "textViewReminder found successfully.");
+        }
+
+        // Request Notification Permission (Android 13+)
+        requestNotificationPermission();
+
+        // Ensure button is always enabled but validate input on click
+        btnContinue.setEnabled(true);
+        btnContinue.setClickable(true);
+        textViewReminder.setText("");
+        textViewReminder.setVisibility(TextView.GONE);
 
         // Add text change listener to EditText
         editTextUsername.addTextChangedListener(new TextWatcher() {
@@ -77,34 +90,42 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Enable button only if text is not empty
-                btnContinue.setEnabled(!s.toString().trim().isEmpty());
+                textViewReminder.setVisibility(TextView.GONE); // Hide reminder when typing
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
         });
 
-        // Click listener for the Continue button
         btnContinue.setOnClickListener(view -> {
-            // Get username input
+            Log.d(TAG, "Continue button clicked!"); // Log when button is pressed
+
             String username = editTextUsername.getText().toString().trim();
 
-            // Proceed only if username is valid
             if (!username.isEmpty()) {
-                // Navigate to GameActivity
+                Log.d(TAG, "Username entered: " + username);
                 Intent intent = new Intent(LoginActivity.this, GameActivity.class);
                 intent.putExtra("USERNAME_KEY", username);
                 startActivity(intent);
-                finish(); // Close LoginActivity so user can't go back to it
-            }
-        });
+                finish();
+            } else {
+                Log.e(TAG, "Username is EMPTY. Reminder should be visible.");
 
-        // Click listener for Test Notification button
-        btnTestNotification.setOnClickListener(view -> {
-            Log.d(TAG, "Test notification button pressed.");
-            NotificationReceiver receiver = new NotificationReceiver();
-            receiver.sendNotification(LoginActivity.this);
+                textViewReminder.setText("Please enter a username!");
+                textViewReminder.setVisibility(TextView.VISIBLE);
+
+                // Check visibility status
+                Log.d(TAG, "textViewReminder visibility after setting: " + textViewReminder.getVisibility());
+
+                // Force UI refresh
+                textViewReminder.post(() -> {
+                    textViewReminder.invalidate();
+                    textViewReminder.requestLayout();
+                });
+
+                // Debugging Log
+                Log.d(TAG, "textViewReminder set to VISIBLE.");
+            }
         });
     }
 
