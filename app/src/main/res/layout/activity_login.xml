@@ -40,52 +40,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:rippleColor="#140101" />
 
-    <ProgressBar
-        android:id="@+id/progressBar_difficulty"
-        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
-        android:layout_width="203dp"
-        android:layout_height="24dp"
-        android:layout_marginBottom="64dp"
-        android:background="#7E007E"
-        android:max="100"
-        android:progress="80"
-        android:progressTint="#0277BD"
-        app:layout_constraintBottom_toTopOf="@id/button_continue"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <EditText
         android:id="@+id/editText_username"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="80dp"
         android:layout_marginEnd="80dp"
-        android:inputType="text"
         android:hint="Username"
+        android:inputType="text"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:layout_constraintBottom_toTopOf="@id/progressBar_difficulty"
+        app:layout_constraintBottom_toTopOf="@+id/button_continue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/button_welcome" />
-
-    <TextView
-        android:id="@+id/textView_difficulty_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:text="Select your desired difficulty."
-        app:layout_constraintBottom_toTopOf="@id/progressBar_difficulty"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textView_difficulty_hard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="88dp"
-        android:text="hard"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/progressBar_difficulty" />
 
     <Button
         android:id="@+id/btnTestNotification"
@@ -109,14 +76,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
-
-    <TextView
-        android:id="@+id/textView_difficulty_easy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="88dp"
-        android:text="easy"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/progressBar_difficulty" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
