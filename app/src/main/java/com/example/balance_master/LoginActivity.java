@@ -127,6 +127,13 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, "textViewReminder set to VISIBLE.");
             }
         });
+        // Click listener for Test Notification button
+        btnTestNotification.setOnClickListener(view -> {
+            Log.d(TAG, "Test notification button pressed.");
+            NotificationReceiver receiver = new NotificationReceiver();
+            receiver.sendNotification(LoginActivity.this);
+        });
+
     }
 
     private void requestNotificationPermission() {
