@@ -1,17 +1,20 @@
 package com.example.balance_master;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -48,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
 
             if (isChecked) {
                 Log.d(TAG, "Daily notifications enabled!");
+                requestExactAlarmPermission();
                 NotificationScheduler.scheduleDailyNotification(this);
             } else {
                 Log.d(TAG, "Daily notifications disabled!");
@@ -107,8 +111,21 @@ public class LoginActivity extends AppCompatActivity {
     private void requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                    != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                    != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+            }
+        }
+    }
+
+    private void requestExactAlarmPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            if (!alarmManager.canScheduleExactAlarms()) {
+                Log.e(TAG, "Exact alarm permission missing! Asking user...");
+                Toast.makeText(this, "Please allow exact alarms in settings!", Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                startActivity(intent);
             }
         }
     }

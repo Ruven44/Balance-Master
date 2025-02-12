@@ -10,7 +10,9 @@ public class BootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "BootReceiver triggered!");
+        if (intent == null || intent.getAction() == null) return;
+
+        Log.d(TAG, "BootReceiver triggered with action: " + intent.getAction());
 
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             Log.d(TAG, "Device restarted - rescheduling notifications...");
