@@ -35,7 +35,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
     private boolean isGameRunning = false;
     private final long gameDuration = 10000L; // 10 seconds
-    private final long countdownTime = 5000L; // 5-second countdown
+    private final long countdownTime = 6000L; // 6-second countdown but shown as 5
 
     private double tiltAngle = 0.0;
     private CountDownTimer gameTimer;
