@@ -10,11 +10,12 @@
     tools:context=".MainActivity">
 
     <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/imageView_Background"
             android:layout_width="499dp"
             android:layout_height="705dp"
             android:translationX="-40dp"
@@ -24,7 +25,7 @@
         <EditText
             android:id="@+id/editText_username"
             android:layout_width="263dp"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="80dp"
             android:layout_marginEnd="80dp"
             android:hint="Username"
