@@ -5,7 +5,8 @@
     android:id="@+id/constraintLayout_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="#673AB7"
+    android:background="#F3F3F3"
+    android:backgroundTint="#F3F3F3"
     tools:context=".MainActivity">
 
     <Button
@@ -69,12 +70,12 @@
         android:id="@+id/switchDailyNotification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enable Daily Notifications"
+        android:layout_marginTop="16dp"
         android:checked="false"
-        app:layout_constraintTop_toBottomOf="@+id/btnTestNotification"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="Enable Daily Notifications"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnTestNotification" />
 
     <TextView
         android:id="@+id/textView_ReminderUsername"
